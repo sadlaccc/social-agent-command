@@ -14,7 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agents: {
+        Row: {
+          created_at: string
+          frequency: string
+          id: string
+          is_active: boolean
+          name: string
+          platforms: string[]
+          role: string
+          tone: string
+          topics: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          platforms?: string[]
+          role?: string
+          tone?: string
+          topics?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          platforms?: string[]
+          role?: string
+          tone?: string
+          topics?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      platform_connections: {
+        Row: {
+          connected_at: string
+          handle: string
+          id: string
+          platform: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          connected_at?: string
+          handle?: string
+          id?: string
+          platform: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          connected_at?: string
+          handle?: string
+          id?: string
+          platform?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          agent_id: string | null
+          content: string
+          created_at: string
+          id: string
+          platform: string
+          published_at: string | null
+          scheduled_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          agent_id?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          platform: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          agent_id?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          platform?: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
