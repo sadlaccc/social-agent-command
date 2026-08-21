@@ -39,7 +39,10 @@ function AuthPage() {
     setBusy(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Welcome back");
     navigate({ to: "/dashboard", replace: true });
   }
@@ -56,8 +59,14 @@ function AuthPage() {
       },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
-    if (!data.session) return toast.success("Check your email to confirm your account.");
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    if (!data.session) {
+      toast.success("Check your email to confirm your account.");
+      return;
+    }
     toast.success("Account created");
     navigate({ to: "/dashboard", replace: true });
   }
