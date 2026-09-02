@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bot, LayoutDashboard, Link2, PenLine, LogOut, Sparkles, Loader2 } from "lucide-react";
+import { Bot, LayoutDashboard, Link2, PenLine, LogOut, Sparkles, Loader2, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const nav = [
   { to: "/agents", label: "Agents", icon: Bot },
   { to: "/connections", label: "Connections", icon: Link2 },
   { to: "/composer", label: "Composer", icon: PenLine },
+  { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 function AuthenticatedLayout() {
