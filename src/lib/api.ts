@@ -124,3 +124,46 @@ export async function deletePost(id: string) {
   const { error } = await supabase.from("posts").delete().eq("id", id);
   if (error) throw error;
 }
+
+export type Profile = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  created_at: string;
+};
+
+export async function getProfile(): Promise<Profile | null> {
+  const user_id = await currentUserId();
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", user_id).maybeSingle();
+  if (error) throw error;
+  return (data ?? null) as Profile | null;
+}
+
+export async function updateProfile(patch: { full_name?: string }) {
+  const user_id = await currentUserId();
+  const { error } = await supabase.from("profiles").update(patch).eq("id", user_id);
+  if (error) throw error;
+}
+
+export async function updatePassword(password: string) {
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw error;
+}
+
+export async function deleteAllPosts() {
+  const user_id = await currentUserId();
+  const { error } = await supabase.from("posts").delete().eq("user_id", user_id);
+  if (error) throw error;
+}
+
+export async function disconnectAllPlatforms() {
+  const user_id = await currentUserId();
+  const { error } = await supabase.from("platform_connections").delete().eq("user_id", user_id);
+  if (error) throw error;
+}
+
+export async function deleteAllAgents() {
+  const user_id = await currentUserId();
+  const { error } = await supabase.from("agents").delete().eq("user_id", user_id);
+  if (error) throw error;
+}
