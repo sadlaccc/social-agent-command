@@ -5,6 +5,7 @@ import { Bot, LayoutDashboard, Link2, PenLine, LogOut, Sparkles, Loader2, Settin
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -53,6 +54,7 @@ function AuthenticatedLayout() {
             </span>
             <span className="font-display font-semibold">Agentflow</span>
           </Link>
+          <ThemeToggle />
         </div>
 
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:overflow-visible">
