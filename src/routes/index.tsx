@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bot, CalendarClock, Link2, Sparkles, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PLATFORMS } from "@/lib/platforms";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({
