@@ -99,6 +99,10 @@ function SettingsPage() {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const profile = useQuery({ queryKey: ["profile"], queryFn: getProfile });
+  const agents = useQuery({ queryKey: ["agents"], queryFn: listAgents });
+  const connections = useQuery({ queryKey: ["connections"], queryFn: listConnections });
+  const posts = useQuery({ queryKey: ["posts"], queryFn: listPosts });
+  const { prefs, update: setPrefs } = useNotificationPrefs();
   const { appearance, update: setAppearance } = useAppearance();
   const { defaults, update: setDefaults } = useAgentDefaults();
 
@@ -160,8 +164,142 @@ function SettingsPage() {
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="appearance">Appearance</TabsTrigger>
           <TabsTrigger value="agents">Agent defaults</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="connections">Connections</TabsTrigger>
+          <TabsTrigger value="usage">Usage</TabsTrigger>
           <TabsTrigger value="danger">Danger zone</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="notifications" className="space-y-6">
+          <Section
+            title="Notifications"
+            description="Choose what the control room tells you about."
+            icon={Bell}
+          >
+            <div className="space-y-3">
+              {(
+                [
+                  {
+                    id: "publishAlerts" as const,
+                    label: "Publish alerts",
+                    hint: "Notify me when an agent publishes a post.",
+                  },
+                  {
+                    id: "scheduleReminders" as const,
+                    label: "Schedule reminders",
+                    hint: "Remind me before a queued post goes out.",
+                  },
+                  {
+                    id: "agentErrors" as const,
+                    label: "Agent errors",
+                    hint: "Alert me when an agent run or connection fails.",
+                  },
+                  {
+                    id: "weeklyDigest" as const,
+                    label: "Weekly digest",
+                    hint: "A Monday summary of output across platforms.",
+                  },
+                ]
+              ).map((n) => (
+                <div
+                  key={n.id}
+                  className="border-border flex items-center justify-between gap-4 rounded-xl border p-4"
+                >
+                  <div>
+                    <p className="text-sm font-medium">{n.label}</p>
+                    <p className="text-muted-foreground text-xs">{n.hint}</p>
+                  </div>
+                  <Switch
+                    checked={prefs[n.id]}
+                    onCheckedChange={(v) => setPrefs({ [n.id]: v })}
+                  />
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
+
+        <TabsContent value="connections" className="space-y-6">
+          <Section
+            title="Connected platforms"
+            description="Timelines this workspace can publish to."
+            icon={Link2}
+          >
+            <div className="space-y-3">
+              {PLATFORMS.map((p) => {
+                const conn = (connections.data ?? []).find((c) => c.platform === p.id);
+                return (
+                  <div
+                    key={p.id}
+                    className="border-border flex flex-wrap items-center justify-between gap-3 rounded-xl border p-4"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">{p.name}</p>
+                      <p className="text-muted-foreground text-xs">
+                        {conn ? `Connected as ${conn.handle}` : "Not connected"}
+                      </p>
+                    </div>
+                    <Badge variant={conn ? "default" : "secondary"}>
+                      {conn ? "Active" : "Idle"}
+                    </Badge>
+                  </div>
+                );
+              })}
+            </div>
+            <Button asChild variant="outline" size="sm" className="mt-4">
+              <a href="/connections">Manage connections</a>
+            </Button>
+          </Section>
+        </TabsContent>
+
+        <TabsContent value="usage" className="space-y-6">
+          <Section
+            title="Workspace usage"
+            description="A quick read on what this workspace holds."
+            icon={Gauge}
+          >
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { label: "Agents", value: (agents.data ?? []).length },
+                {
+                  label: "Active agents",
+                  value: (agents.data ?? []).filter((a) => a.is_active).length,
+                },
+                { label: "Connections", value: (connections.data ?? []).length },
+                { label: "Posts", value: (posts.data ?? []).length },
+                {
+                  label: "Published",
+                  value: (posts.data ?? []).filter((p) => p.status === "published").length,
+                },
+                {
+                  label: "Scheduled",
+                  value: (posts.data ?? []).filter((p) => p.status === "scheduled").length,
+                },
+                {
+                  label: "Drafts",
+                  value: (posts.data ?? []).filter((p) => p.status === "draft").length,
+                },
+                {
+                  label: "Top platform",
+                  value:
+                    [...PLATFORMS]
+                      .map((p) => ({
+                        n: platformName(p.id),
+                        c: (posts.data ?? []).filter((x) => x.platform === p.id).length,
+                      }))
+                      .sort((a, b) => b.c - a.c)[0]?.n ?? "—",
+                },
+              ].map((s) => (
+                <div key={s.label} className="border-border rounded-xl border p-4">
+                  <p className="font-display text-2xl font-bold">{s.value}</p>
+                  <p className="text-muted-foreground text-xs tracking-wide uppercase">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
 
         <TabsContent value="profile" className="space-y-6">
           <Section
