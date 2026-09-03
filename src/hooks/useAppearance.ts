@@ -20,7 +20,7 @@ export const ACCENTS: { id: AccentId; label: string; swatch: string }[] = [
 const KEY = "agentflow.appearance";
 
 export const DEFAULT_APPEARANCE: Appearance = {
-  theme: "dark",
+  theme: "light",
   accent: "teal",
   density: "comfortable",
 };
