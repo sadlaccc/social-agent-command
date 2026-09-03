@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
+  Bell,
   Bot,
   Check,
+  Gauge,
+  Link2,
   Loader2,
   Moon,
   Palette,
@@ -22,10 +25,15 @@ import {
   deleteAllPosts,
   disconnectAllPlatforms,
   deleteAllAgents,
+  listAgents,
+  listConnections,
+  listPosts,
 } from "@/lib/api";
-import { PLATFORMS, TONES, FREQUENCIES } from "@/lib/platforms";
+import { PLATFORMS, TONES, FREQUENCIES, platformName } from "@/lib/platforms";
 import { useAppearance, ACCENTS } from "@/hooks/useAppearance";
 import { useAgentDefaults } from "@/hooks/useAgentDefaults";
+import { useNotificationPrefs } from "@/hooks/useNotificationPrefs";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
