@@ -51,9 +51,12 @@ function Landing() {
           </span>
           <span className="font-display text-lg font-semibold">Agentflow</span>
         </div>
-        <Button asChild variant="outline" size="sm">
-          <Link to="/auth">Sign in</Link>
-        </Button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Button asChild variant="outline" size="sm">
+            <Link to="/auth">Sign in</Link>
+          </Button>
+        </div>
       </header>
 
       <section className="mx-auto max-w-6xl px-5 pt-10 pb-16 md:pt-20">
