@@ -1,14 +1,32 @@
-# Welcome to your Lovable project
+# Agent Hub
+
+Create  a dashboard for managing ai agents,
+
+The users can post on social media platform they want at their timelines.
+
+The users connects with the platforms
+
+The users should provide relevant 
+
+The users should login
+
+Use default logins below 
+
+Email:caldas.cheruyot@intellinksea.com 
+
+Password: Intellinksea@2026
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://social-agent-command.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/9762268c-bb7a-40c9-b684-0f586f96c59d).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +38,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
