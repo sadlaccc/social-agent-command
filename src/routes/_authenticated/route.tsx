@@ -1,11 +1,46 @@
-import { createFileRoute, Outlet, Link, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  Link,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Bot, LayoutDashboard, Link2, PenLine, LogOut, Sparkles, Loader2, Settings } from "lucide-react";
+import {
+  Bot,
+  LayoutDashboard,
+  Link2,
+  PenLine,
+  LogOut,
+  Sparkles,
+  Loader2,
+  Settings,
+  Plus,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/hooks/useSession";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -45,60 +80,116 @@ function AuthenticatedLayout() {
   }
 
   return (
-    <div className="min-h-screen md:flex">
-      <aside className="bg-sidebar border-sidebar-border md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0 md:border-r">
-        <div className="flex items-center justify-between gap-2 px-5 py-5">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <span className="bg-signal flex size-8 items-center justify-center rounded-lg">
-              <Sparkles className="text-primary-foreground size-4" />
-            </span>
-            <span className="font-display font-semibold">Agentflow</span>
-          </Link>
-          <ThemeToggle />
-        </div>
-
-        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 md:flex-col md:overflow-visible">
-          {nav.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-              activeProps={{
-                className:
-                  "bg-sidebar-accent text-sidebar-accent-foreground flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium",
-              }}
-            >
-              <item.icon className="size-4" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="mt-auto hidden px-3 pb-5 md:block">
-          <div className="border-sidebar-border rounded-lg border p-3">
-            <p className="truncate text-xs font-medium">{user?.email}</p>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-2 w-full justify-start"
-              onClick={signOut}
-            >
-              <LogOut className="size-4" /> Sign out
-            </Button>
-          </div>
-        </div>
-      </aside>
-
-      <div className="flex-1">
-        <div className="border-border flex items-center justify-end border-b px-5 py-3 md:hidden">
-          <Button variant="ghost" size="sm" onClick={signOut}>
-            <LogOut className="size-4" /> Sign out
-          </Button>
-        </div>
-        <main className="mx-auto max-w-5xl px-5 py-8">
+    <SidebarProvider>
+      <AppSidebar email={user?.email} onSignOut={signOut} />
+      <SidebarInset>
+        <AppHeader />
+        <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-7 md:px-8 md:py-9">
           <Outlet />
         </main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
+function AppSidebar({ email, onSignOut }: { email?: string; onSignOut: () => void }) {
+  const currentPath = useRouterState({ select: (router) => router.location.pathname });
+  const { setOpenMobile } = useSidebar();
+  const initials = email?.slice(0, 2).toUpperCase() ?? "AF";
+
+  return (
+    <Sidebar collapsible="icon" className="border-sidebar-border">
+      <SidebarHeader className="gap-3 p-3">
+        <Link
+          to="/dashboard"
+          className="flex h-10 items-center gap-3 overflow-hidden px-1"
+          onClick={() => setOpenMobile(false)}
+        >
+          <span className="bg-signal flex size-8 shrink-0 items-center justify-center rounded-lg shadow-sm">
+            <Sparkles className="text-primary-foreground size-4" />
+          </span>
+          <span className="min-w-0 group-data-[collapsible=icon]:hidden">
+            <span className="font-display block truncate text-sm font-semibold">Agentflow</span>
+            <span className="text-muted-foreground block truncate text-[11px]">Social command center</span>
+          </span>
+        </Link>
+        <Button asChild size="sm" className="w-full justify-start group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:p-0">
+          <Link to="/composer" onClick={() => setOpenMobile(false)}>
+            <Plus className="size-4 shrink-0" />
+            <span className="group-data-[collapsible=icon]:hidden">Create post</span>
+          </Link>
+        </Button>
+      </SidebarHeader>
+
+      <SidebarSeparator />
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {nav.map((item) => (
+                <SidebarMenuItem key={item.to}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={currentPath === item.to}
+                    tooltip={item.label}
+                    size="lg"
+                    className="h-10 gap-3"
+                  >
+                    <Link to={item.to} onClick={() => setOpenMobile(false)}>
+                      <item.icon className="size-4" />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="p-3">
+        <SidebarSeparator className="mx-0 mb-1" />
+        <div className="flex items-center gap-2 overflow-hidden rounded-md p-1 group-data-[collapsible=icon]:p-0">
+          <Avatar className="size-8 shrink-0 rounded-md">
+            <AvatarFallback className="bg-brand-soft text-primary rounded-md text-xs font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+            <p className="truncate text-xs font-medium">{email}</p>
+            <p className="text-muted-foreground text-[11px]">Administrator</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 shrink-0 group-data-[collapsible=icon]:hidden"
+            onClick={onSignOut}
+            aria-label="Sign out"
+            title="Sign out"
+          >
+            <LogOut className="size-4" />
+          </Button>
+        </div>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+}
+
+function AppHeader() {
+  const currentPath = useRouterState({ select: (router) => router.location.pathname });
+  const currentItem = nav.find((item) => item.to === currentPath);
+
+  return (
+    <header className="bg-background/90 border-border sticky top-0 z-20 flex h-16 items-center gap-3 border-b px-4 backdrop-blur-md md:px-6">
+      <SidebarTrigger className="size-9" />
+      <div className="bg-border h-5 w-px" />
+      <div className="min-w-0 flex-1">
+        <p className="font-display truncate text-sm font-semibold">{currentItem?.label ?? "Agentflow"}</p>
+        <p className="text-muted-foreground hidden text-xs sm:block">Manage your social agent workspace</p>
       </div>
-    </div>
+      <ThemeToggle />
+    </header>
   );
 }
