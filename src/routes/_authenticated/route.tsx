@@ -92,7 +92,13 @@ function AuthenticatedLayout() {
   );
 }
 
-function AppSidebar({ email, onSignOut }: { email?: string; onSignOut: () => void }) {
+function AppSidebar({
+  email,
+  onSignOut,
+}: {
+  email: string | undefined;
+  onSignOut: () => void | Promise<void>;
+}) {
   const currentPath = useRouterState({ select: (router) => router.location.pathname });
   const { setOpenMobile } = useSidebar();
   const initials = email?.slice(0, 2).toUpperCase() ?? "AF";
